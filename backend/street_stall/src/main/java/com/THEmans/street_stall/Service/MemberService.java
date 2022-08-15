@@ -30,4 +30,11 @@ public class MemberService {
         );
         return memberRepository.save(member);
     }
+
+    //로그인 서비스
+    public Member login(String loginId, String password){
+        return memberRepository.findById(loginId)
+                .filter(m -> m.getPassword().equals(password))
+                .orElse(null);
+    }
 }
