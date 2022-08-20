@@ -24,9 +24,9 @@ public class OAuthService {
 
     private final UserRepository userRepository;
 
-    private final String client_id = "xxx";
+    private final String client_id = "26b62b4ed18c1bdfbcde187921450096";
     private final String client_secret = "xxx";
-    private final String redirect_uri = "http://localhost:8880/login/oauth2/code/kakao";
+    private final String redirect_uri = "http://localhost:8880/login/oauth/kakao";
     private final String accessTokenUri = "https://kauth.kakao.com/oauth/token";
     private final String UserInfoUri = "https://kapi.kakao.com/v2/user/me";
 
@@ -78,30 +78,30 @@ public class OAuthService {
 
         try {
             kakaoProfile = objectMapper.readValue(response, KakaoProfile.class);
+
         }catch (JsonProcessingException e)
         {
             e.printStackTrace();
         }
+
         return kakaoProfile;
     }
 
     // 카카오 로그인 사용자 강제 호이ㅝㄴ가입
     @Transactional
     public User saveUser(String access_token){
+
         KakaoProfile profile = getUserInfoByAccessToken(access_token); //토큰으로 사용자 정보 받아오기
+
         User user = userRepository.findByUserid(profile.getId());
 
         //처음이용자 강제 회원가입
         if(user==null){
             user = User.builder()
                     .userid(profile.getId())
-                    .password(null) //필요없으니 아무것도 안넣음
-                    .nickname(profile.getKakao_account().getProfile().getNickname())
-                    .profileImg(profile.getKakao_account().getProfile().getProfile_image_url())
+                    .name(profile.getKakao_account().getProfile().getNickname())
                     .email(profile.getKakao_account().getEmail())
                     .roles("User") //추후 변경
-                    .createTime(LocalDateTime.now())
-                    .provider("Kakao")
                     .build();
 
             userRepository.save(user);

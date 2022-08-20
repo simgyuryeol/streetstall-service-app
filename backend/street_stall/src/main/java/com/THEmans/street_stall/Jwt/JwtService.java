@@ -6,6 +6,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Log4j2
 public class JwtService {
     private final JwtProviderService jwtProviderService;
     private final UserRepository userRepository;
@@ -29,10 +32,10 @@ public class JwtService {
     @Transactional
     public JwtToken joinJwtToken(String userId){
         User user = userRepository.findByUserid(userId);
-        RefreshToken userRefreshhToken = user.getJwtRefreshToken();
+        RefreshToken userRefreshToken = user.getJwtRefreshToken();
 
         //처음 서비스를 이용하는 사용자(refresh 토큰이 없는 사용자)
-        if(userRefreshhToken ==null){
+        if(userRefreshToken ==null){
             //access, refresh 토큰 생성
             JwtToken jwtToken = jwtProviderService.createJwtToken(user.getId(),user.getUserid());
 
@@ -45,11 +48,11 @@ public class JwtService {
             return jwtToken;
         }
         else { //refresh토큰이 있는 사용자(기존 사용자)
-            String accessToken = jwtProviderService.validRefreshToken(userRefreshhToken);
+            String accessToken = jwtProviderService.validRefreshToken(userRefreshToken);
 
             //refresh토큰 기간 유효
             if(accessToken != null){
-                return new JwtToken(accessToken, userRefreshhToken.getRefreshToken());
+                return new JwtToken(accessToken, userRefreshToken.getRefreshToken());
             }
             else{ //refresh 토큰ㄴ 기간 만료. 새로운 access, refresh 토큰 새엇ㅇ
                 JwtToken newJwtToken = jwtProviderService.createJwtToken(user.getId(), user.getUserid());
@@ -92,10 +95,12 @@ public class JwtService {
 
         //refresh 토큰의 유효기간이 남아 access 토크난 생성
         if(accessToken != null){
+            //log.info("액세스만 변경");
             return new JwtToken(accessToken, refreshToken);
         }
         //refresh 토큰이 만료됨 -> access, refresh 토큰 모두 재발급
         else {
+            //log.info("리플레시도 변경 변경");
             JwtToken newJwtToken = jwtProviderService.createJwtToken(findUser.getId() , findUser.getUserid());
             findUser.SetRefreshToken(newJwtToken.getRefreshToken());
             return newJwtToken;
@@ -135,7 +140,7 @@ public class JwtService {
     }
 
     //accessToekn이 만료된 경우의 response
-    public Map<String,String> requredRefreshTokenResponse(){
+    public Map<String,String> requiredRefreshTokenResponse(){
         Map<String,String> map = new LinkedHashMap<>();
         map.put("status","401");
         map.put("message","accessToekn이 만료되었거나 잘못된 값입니다.");

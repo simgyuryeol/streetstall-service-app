@@ -53,7 +53,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
         // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
 
+        //아이디와 패스워드로 security가 알아 볼수 있는 token 객체로 변경
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user.getUserid(), user.getPassword());
+        //AuthenticationManager에 token을 넘기면 userDetailsService가 받아 처리한다
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
         PrincipalDetails principal = (PrincipalDetails) authentication.getPrincipal(); //여기서 에러 주의 proxy 에러?
@@ -62,6 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     //attemptAuthentication 실행 후 인증이 정상적으로 되었으면 아래 함수 실행
+    // 인증에 실패햇을 경우에는 unsuccessfulAuthnetication() 메서드가 실행
     //Jwt 토큰을 만들어서 request 요청을 한 사용자에게 jwt 토큰 전달
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult)

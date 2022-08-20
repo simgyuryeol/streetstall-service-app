@@ -18,34 +18,31 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Long id;
+    private Long id; //인덱스
 
-    private String userid; //카카오 고유 id
-    private String password;
+    private String userid; //카카오 고유 id, 연계정보
+    private String name; //유저 이름
+    private String email;
+    //private String nickname;
+
     private String roles; // 사용자, 판매자, 관리자
 
-    private String provider;
-    private String nickname;
-    private String profileImg;
-    private String email;
-
-    private LocalDateTime createTime;
+    private String password;
+//    private String provider;
+//    private String profileImg;
+//    private LocalDateTime createTime;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "refreshToken")
     private RefreshToken jwtRefreshToken;
 
     @Builder
-    public User(String userid, String password, String roles, String nickname, String profileImg,
-                String email,LocalDateTime createTime,String provider) {
+    public User(String userid, String name, String roles, String email) {
         this.userid = userid;
-        this.password = password;
+        this.name = name;
         this.roles = roles;
-        this.nickname = nickname;
-        this.profileImg = profileImg;
         this.email = email;
-        this.createTime = createTime;
-        this.provider = provider;
+
     }
 
     /**

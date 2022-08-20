@@ -32,7 +32,8 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> web.ignoring()
-                .antMatchers("/join","/","/home","/api/oauth/token/kakao","/login/oauth2/code/kakao","/refresh/**");
+                .antMatchers("/join","/","/home","/login/kakao","/login/oauth2/code/kakao","/refresh/**");
+        //로그인할 때 허용하는 범위 작성. 권한 에러 뜨면 여기를 수정해야함
     }
 
     @Bean
