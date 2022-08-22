@@ -37,7 +37,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 
-        String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING);
+        String jwtHeader = request.getHeader(JwtProperties.HEADER_STRING); //요청들어온 accesstoke이라는 헤더의 값을 가져온다
         if(jwtHeader==null){
             /**
              * jwt 토큰이 없는 사용자 필터링

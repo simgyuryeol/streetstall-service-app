@@ -35,7 +35,7 @@ public class OAuthService {
         //요청 param (body)
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", client_id); // TODO REST_API_KEY 입력
+        params.add("client_id", client_id); // TODO REST_API_KEY 입력 //추후에 value로 처리
         params.add("redirect_uri", redirect_uri); // TODO 인가코드 받은 redirect_uri 입력
         params.add("code", code);
         //params.add("client_secret", client_secret); //클라이언트 시크릿 보안 강화 해당 기능 사용하면 추가해야됨

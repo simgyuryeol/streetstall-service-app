@@ -4,6 +4,9 @@ import com.THEmans.street_stall.Jwt.RefreshToken;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,7 +35,7 @@ public class User {
 //    private String profileImg;
 //    private LocalDateTime createTime;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST,orphanRemoval = true)
     @JoinColumn(name = "refreshToken")
     private RefreshToken jwtRefreshToken;
 
@@ -50,9 +53,14 @@ public class User {
      */
     public void createRefreshToken(RefreshToken refreshToken){
         this.jwtRefreshToken = refreshToken;
+
     }
     public void SetRefreshToken(String refreshToken){
         this.jwtRefreshToken.setRefreshToken(refreshToken);
+    }
+
+    public void deleteRefreshToken(){
+
     }
 
     /**

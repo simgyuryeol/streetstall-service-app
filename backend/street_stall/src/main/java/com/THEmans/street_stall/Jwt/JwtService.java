@@ -70,7 +70,7 @@ public class JwtService {
         try {
             DecodedJWT verify = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(accessToken);
 
-            if(!verify.getExpiresAt().before(new Date())){
+            if(!verify.getExpiresAt().before(new Date())){ //만료기간 검증 verify.getExpriesAt()를 하면 만료되는 시간이 나온다
                 return verify.getClaim("userid").asString();
             }
         }catch (Exception e){
@@ -78,6 +78,22 @@ public class JwtService {
             return null;
         }
         return null;
+    }
+
+    /**
+     * access token으로 유저 아이디 찾기 만료 여부 상관없이
+     */
+
+    public String UserfindbyAccessToken(String accessToken){
+        try {
+            DecodedJWT verify = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(accessToken);
+            return verify.getClaim("userid").asString();
+
+        }catch (Exception e){
+            // 여기도 accesstoken이 기간 만료인지 정삭적이지 않은 accesstoken인지 구분 해야 하는가?
+            return null;
+        }
+
     }
 
     /**
@@ -128,6 +144,14 @@ public class JwtService {
         map.put("message","accessToken, refreshToken이 생성되었습니다.");
         map.put("accessToken", jwtToken.getAccessToken());
         map.put("refreshToken",jwtToken.getRefreshToken());
+        return map;
+    }
+
+    //로그아웃시 응답 json response
+    public Map<String,String> successLogoutResponse(){
+        Map<String, String> map = new LinkedHashMap<>();
+        map.put("status","200");
+        map.put("message","로그아웃이 완료되었습니다.");
         return map;
     }
 

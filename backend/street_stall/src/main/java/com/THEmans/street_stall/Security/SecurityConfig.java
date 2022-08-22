@@ -32,7 +32,7 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> web.ignoring()
-                .antMatchers("/join","/","/home","/login/kakao","/login/oauth2/code/kakao","/refresh/**");
+                .antMatchers("/join","/","/home","/login/kakao","/login/oauth2/code/kakao","/refresh/**","/api/logout/**");
         //로그인할 때 허용하는 범위 작성. 권한 에러 뜨면 여기를 수정해야함
     }
 
@@ -47,12 +47,13 @@ public class SecurityConfig {
 
                 .apply(new MyCustomDsl())
                 .and()
-
+//해당 api로 들어갈시 access토큰 자동 검증. 만료됬을 시 에러 응답메시지 보냄
                 .authorizeRequests()
                 .antMatchers("/api/v1/user/**").hasAuthority("USER")
                 .antMatchers("/api/v1/manager/**").hasAuthority("MANAGER")
                 .antMatchers("/api/v1/admin/**").hasAuthority("ADMIN")
-                .anyRequest().permitAll()
+                //.antMatchers("/login").hasAnyAuthority()
+                .anyRequest().permitAll() //다른 요청은. 어떤 사용자든 접근 가능 이라는 뜻
 
                 .and()
                 .build();
