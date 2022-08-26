@@ -31,7 +31,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         this.jwtService = jwtService;
     }
 
-    @Override //SecurityConfig에서 antMatchers에 연결된 API 요청시 실행됨
+    @Override //SecurityConfig에서 antMatchers에 연결된 API 요청시 실행됨 토큰 검증
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         ObjectMapper objectMapper  = new ObjectMapper();
         response.setContentType("application/json");
@@ -74,8 +74,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         /**
          * access 토큰이 정상적이지 않거나 기간이 만료된 토큰일 경우
+         * refresh토큰이 있을 경우 access 토큰을 생성시켜줌
          */
         else{
+
             Map<String,String> jwtResponse = jwtService.requiredRefreshTokenResponse();
             response.getWriter().write(objectMapper.writeValueAsString(jwtResponse));
             return;

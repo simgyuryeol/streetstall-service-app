@@ -7,6 +7,7 @@ import com.THEmans.street_stall.Jwt.JwtToken;
 import com.THEmans.street_stall.Jwt.RefreshTokenRespository;
 import com.THEmans.street_stall.Repository.UserRepository;
 import com.THEmans.street_stall.kakaologin.OAuthService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Map;
 
@@ -32,7 +34,7 @@ public class LoginController {
      * @param code
      * @return
      */
-    @GetMapping("/login/kakao")
+    @GetMapping("/kakao/login")
     public Map<String,String> KakaoLogin(@RequestParam("code") String code){
         //acess 토큰 받기
         KakaoAccessToken oauthToken = oAuthService.getAccessTokenByCode(code);
@@ -48,8 +50,7 @@ public class LoginController {
      * 로그아웃
      */
 
-
-    @GetMapping("/api/logout")
+    @GetMapping("/kakao/logout")
     public Map<String,String> KakaoLogout(@RequestParam("accessToken") String accessToken){
         String userid = jwtService.UserfindbyAccessToken(accessToken);
         User user = userRepository.findByUserid(userid);
@@ -59,6 +60,23 @@ public class LoginController {
 
         return jwtService.successLogoutResponse();
     }
+
+    /**
+     * accestoken., refreshtoken 갱신
+     */
+    @GetMapping("/refresh/{userId}")
+    public Map<String, String> refreshToken(@PathVariable("userId") String userid, @RequestHeader("refreshToken")String refreshToken,
+                                            HttpServletResponse response) throws JsonProcessingException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("utf-8");
+
+        JwtToken jwtToken = jwtService.validRefreshToken(userid,refreshToken);
+        Map<String, String> jsonResponse = jwtService.recreateTokenResponse(jwtToken);
+
+        return jsonResponse;
+    }
+
+
 
 
 
