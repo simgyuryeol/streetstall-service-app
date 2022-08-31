@@ -106,29 +106,46 @@ public class JwtService {
         //전달받은 refresh 토큰과 DB의 refresh 토큰이 일치하는지 확인
         RefreshToken findRefreshToken = sameCheckRefreshToken(findUser,refreshToken);
 
-        //refresh 토큰이 만료되지 않았으면 access 토큰이 null이 아니다.
-        String accessToken = jwtProviderService.validRefreshToken(findRefreshToken);
-
         //refresh 토큰의 유효기간이 남아 access 토크난 생성
-        if(accessToken != null){
+        if(findRefreshToken != null){
             //log.info("액세스만 변경");
+            //refresh 토큰이 만료되지 않았으면 access 토큰이 null이 아니다.
+            String accessToken = jwtProviderService.validRefreshToken(findRefreshToken);
             return new JwtToken(accessToken, refreshToken);
         }
-        //refresh 토큰이 만료됨 -> access, refresh 토큰 모두 재발급
+        //refresh 토큰이 만료됨 -> 새롭게 로그인
         else {
             //log.info("리플레시도 변경 변경");
-            JwtToken newJwtToken = jwtProviderService.createJwtToken(findUser.getId() , findUser.getUserid());
-            findUser.SetRefreshToken(newJwtToken.getRefreshToken());
-            return newJwtToken;
+//            JwtToken newJwtToken = jwtProviderService.createJwtToken(findUser.getId() , findUser.getUserid());
+//            findUser.SetRefreshToken(newJwtToken.getRefreshToken());
+//            return newJwtToken;
+            return null;
         }
     }
+
+    /**
+     * 리프레쉬 토큰 유효하면 accecc토큰 발급, 아니면 로그인 요청
+     * @param userid
+     * @param refreshToken
+     */
+    public Map<String, String> RefreshTokenCheck(String userid, String refreshToken) {
+        JwtToken jwtToken = validRefreshToken(userid,refreshToken);
+        if (jwtToken!=null) { //리프레쉬 토큰이 아직 유효해서 액세스토큰 재발급 받으면 해당 값을 클라이언트한테 전달
+            Map<String, String> jsonResponse = recreateTokenResponse(jwtToken);
+            return jsonResponse;
+        }
+        else{ //새롭게 로그인을 해야함
+            return requiredJwtTokenResponse();
+        }
+    }
+
 
     private RefreshToken sameCheckRefreshToken(User findUser, String refreshToken) {
 
         //DB에서 찾기
         RefreshToken jwtRefreshToken = findUser.getJwtRefreshToken();
 
-        if(jwtRefreshToken.getRefreshToken().equals(refreshToken)){
+        if(jwtRefreshToken!=null && jwtRefreshToken.getRefreshToken().equals(refreshToken)){
             return jwtRefreshToken;
         }
         return null;
@@ -180,5 +197,6 @@ public class JwtService {
         map.put("refreshToken", jwtToken.getRefreshToken());
         return map;
     }
+
 
 }

@@ -27,7 +27,6 @@ public class LoginController {
     private final OAuthService oAuthService; //카카오 서비스스
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final RefreshTokenRespository refreshTokenRespository;
 
     /**
      * JWT를 이용한 카카오 로그인
@@ -51,11 +50,11 @@ public class LoginController {
      */
 
     @GetMapping("/kakao/logout")
-    public Map<String,String> KakaoLogout(@RequestParam("accessToken") String accessToken){
+    public Map<String,String> KakaoLogout(@RequestHeader("accessToken") String accessToken){
         String userid = jwtService.UserfindbyAccessToken(accessToken);
         User user = userRepository.findByUserid(userid);
-
         user.setJwtRefreshToken(null);
+
         userRepository.save(user);
 
         return jwtService.successLogoutResponse();
@@ -70,10 +69,8 @@ public class LoginController {
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
 
-        JwtToken jwtToken = jwtService.validRefreshToken(userid,refreshToken);
-        Map<String, String> jsonResponse = jwtService.recreateTokenResponse(jwtToken);
-
-        return jsonResponse;
+        return jwtService.RefreshTokenCheck(userid,refreshToken);
+        //refreshtoken이 없으면 로그인 요청, 있으면 accesstoken 재발급
     }
 
 

@@ -8,6 +8,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -24,7 +26,8 @@ public class OAuthService {
 
     private final UserRepository userRepository;
 
-    private final String client_id = "26b62b4ed18c1bdfbcde187921450096";
+    //@Value("${kakao.client_id}")
+    private final String client_id  = "26b62b4ed18c1bdfbcde187921450096";
     private final String client_secret = "xxx";
     private final String redirect_uri = "http://localhost:8880/login/oauth/kakao";
     private final String accessTokenUri = "https://kauth.kakao.com/oauth/token";
