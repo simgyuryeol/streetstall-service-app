@@ -101,6 +101,7 @@ public class JwtService {
      */
     @Transactional
     public JwtToken validRefreshToken(String userid, String refreshToken){
+
         User findUser = userRepository.findByUserid(userid);
 
         //전달받은 refresh 토큰과 DB의 refresh 토큰이 일치하는지 확인
@@ -129,8 +130,11 @@ public class JwtService {
      * @param refreshToken
      */
     public Map<String, String> RefreshTokenCheck(String userid, String refreshToken) {
+
         JwtToken jwtToken = validRefreshToken(userid,refreshToken);
+
         if (jwtToken!=null) { //리프레쉬 토큰이 아직 유효해서 액세스토큰 재발급 받으면 해당 값을 클라이언트한테 전달
+
             Map<String, String> jsonResponse = recreateTokenResponse(jwtToken);
             return jsonResponse;
         }
@@ -141,7 +145,6 @@ public class JwtService {
 
 
     private RefreshToken sameCheckRefreshToken(User findUser, String refreshToken) {
-
         //DB에서 찾기
         RefreshToken jwtRefreshToken = findUser.getJwtRefreshToken();
 

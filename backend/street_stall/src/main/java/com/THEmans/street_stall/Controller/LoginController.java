@@ -51,10 +51,11 @@ public class LoginController {
 
     @GetMapping("/kakao/logout")
     public Map<String,String> KakaoLogout(@RequestHeader("accessToken") String accessToken){
+
         String userid = jwtService.UserfindbyAccessToken(accessToken);
         User user = userRepository.findByUserid(userid);
-        user.setJwtRefreshToken(null);
 
+        user.setJwtRefreshToken(null);
         userRepository.save(user);
 
         return jwtService.successLogoutResponse();
