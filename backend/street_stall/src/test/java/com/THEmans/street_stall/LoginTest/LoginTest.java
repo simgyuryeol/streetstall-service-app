@@ -5,6 +5,7 @@ import com.THEmans.street_stall.Repository.UserRepository;
 import com.THEmans.street_stall.Service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,13 +34,19 @@ public class LoginTest {
     @LocalServerPort //Random_Port의 port값을 받아온다.
     private int port;
 
+
+    @AfterEach //테스트 종료후 DB 초기화
+    public void clean(){
+        userRepository.deleteAll();
+    }
+
     /**
      * 회원가입 서비스 테스트
      * 정상적으로 DB에 저장이 되는지
      */
     @Test
     @DisplayName("회원가입 성공")
-    @Transactional
+    //@Transactional
     void 회원가입성공(){
         //given
         String userid="123";
@@ -56,7 +63,7 @@ public class LoginTest {
      */
     @Test
     @DisplayName("중복 회원가입 방지 테스트")
-    @Transactional
+    //@Transactional
     void 중복회원가입방지테스트(){
         //given
         String userid="123";
@@ -77,7 +84,7 @@ public class LoginTest {
      */
     @Test
     @DisplayName("/login API 테스트")
-    @Transactional
+    //@Transactional
     public void loginAPI테스트(){
         //given
         String userid="123";
@@ -127,9 +134,6 @@ public class LoginTest {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 
-    @AfterEach
-    public void clean(){
-        userRepository.deleteAll();
-    }
+
 
 }

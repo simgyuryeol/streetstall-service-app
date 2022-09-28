@@ -17,6 +17,7 @@ public class LoginService {
     private final UserRepository userRepository;
 
 
+    //회원가입 서비스
     public Map<String,String> saveUser(String userid, String nickname){
         User user = userRepository.findByUserid(userid);
 
@@ -30,6 +31,7 @@ public class LoginService {
         return successLoginResponse(userid,nickname);
     }
 
+    //로그아웃 서비스
     public Map<String,String> logout(String userid) {
 
         userRepository.deleteById(userid);
