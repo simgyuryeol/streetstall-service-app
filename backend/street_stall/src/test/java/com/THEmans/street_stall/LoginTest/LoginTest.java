@@ -1,10 +1,12 @@
 package com.THEmans.street_stall.LoginTest;
 
 import com.THEmans.street_stall.Domain.User;
+import com.THEmans.street_stall.Dto.User_logout;
 import com.THEmans.street_stall.Repository.UserRepository;
 import com.THEmans.street_stall.Service.LoginService;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.json.JSONObject;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,11 +53,18 @@ public class LoginTest {
         //given
         String userid="123";
         String nickname="심규렬";
+        User user = new User();
+        user.setUserid(userid);
+        user.setNickname(nickname);
+        user.setUserstate(0L);
+        user.setGuest(Boolean.TRUE);
+        user.setStall(Boolean.FALSE);
+        user.setManager(Boolean.FALSE);
         //when
-        loginService.saveUser(userid,nickname);
-        User user=userRepository.findByUserid(userid);
+        loginService.saveUser(user);
+        User userfind=userRepository.findByUserid(userid);
         //then
-        Assertions.assertThat(user.getNickname()).isEqualTo(nickname);
+        Assertions.assertThat(userfind.getNickname()).isEqualTo(nickname);
     }
 
     /**
@@ -68,15 +77,30 @@ public class LoginTest {
         //given
         String userid="123";
         String nickname="심규렬";
+        User user = new User();
+        user.setUserid(userid);
+        user.setNickname(nickname);
+        user.setUserstate(0L);
+        user.setGuest(Boolean.TRUE);
+        user.setStall(Boolean.FALSE);
+        user.setManager(Boolean.FALSE);
+
         String userid2="123";
         String nickname2="심규";
+        User user2 = new User();
+        user2.setUserid(userid2);
+        user2.setNickname(nickname2);
+        user2.setUserstate(0L);
+        user2.setGuest(Boolean.TRUE);
+        user2.setStall(Boolean.FALSE);
+        user2.setManager(Boolean.FALSE);
         //when
-        loginService.saveUser(userid,nickname);
-        User user=userRepository.findByUserid(userid);
+        loginService.saveUser(user);
+        User find_user=userRepository.findByUserid(userid);
         //then
-        Assertions.assertThat(user.getNickname()).isEqualTo(nickname);
-        loginService.saveUser(userid2,nickname2);
-        Assertions.assertThat(user.getNickname()).isEqualTo(nickname);
+        Assertions.assertThat(find_user.getNickname()).isEqualTo(nickname);
+        loginService.saveUser(user2);
+        Assertions.assertThat(find_user.getNickname()).isEqualTo(nickname);
     }
 
     /**
@@ -89,19 +113,20 @@ public class LoginTest {
         //given
         String userid="123";
         String nickname="tlarbfuf";
+        User user = new User();
+        user.setUserid(userid);
+        user.setNickname(nickname);
+        user.setUserstate(0L);
+        user.setGuest(Boolean.TRUE);
+        user.setStall(Boolean.FALSE);
+        user.setManager(Boolean.FALSE);
 
         String url = "http://localhost:"+port+"/login";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON }));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("userid",userid);
-        headers.set("nickname",nickname);
-        HttpEntity request = new HttpEntity(headers);
-
         //when
 
-        ResponseEntity<User> response = restTemplate.exchange(url, HttpMethod.POST,request,User.class);
+        ResponseEntity<User> response = restTemplate.postForEntity(url,user,User.class);
+
         User response_user=response.getBody();
         //then
         Assertions.assertThat(response_user.getNickname()).isEqualTo(nickname);
@@ -117,23 +142,30 @@ public class LoginTest {
         //given
         String userid="123";
         String nickname="tlarbfuf";
-        loginService.saveUser(userid,nickname);
+        User user = new User();
+        user.setUserid(userid);
+        user.setNickname(nickname);
+        user.setUserstate(0L);
+        user.setGuest(Boolean.TRUE);
+        user.setStall(Boolean.FALSE);
+        user.setManager(Boolean.FALSE);
+
+        loginService.saveUser(user);
 
 
         String url = "http://localhost:"+port+"/logout";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON }));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("userid",userid);
-        HttpEntity request = new HttpEntity(headers);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setAccept(Arrays.asList(new MediaType[] { MediaType.APPLICATION_JSON }));
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.set("userid",userid);
+//        HttpEntity request = new HttpEntity(headers);
 
+        HttpEntity request = new HttpEntity<>(user);
         //when
-        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.DELETE,request, Map.class);
+        ResponseEntity<User_logout> response = restTemplate.exchange(url, HttpMethod.DELETE,request, User_logout.class);
         //then
-        Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        Assertions.assertThat(userid).isEqualTo(response.getBody().getUserid());
     }
-
-
 
 }

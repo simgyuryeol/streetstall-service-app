@@ -17,10 +17,23 @@ public class User {
 
     private String nickname;
 
+    /**
+     * 0이면 Guest, 1이면 Stall, 2이면 Manager
+     */
+    private Long userstate;
+
+    private Boolean guest;
+    private Boolean stall;
+    private Boolean manager;
+
     @Builder
-    public User(String userid, String nickname){
+    public User(String userid, String nickname, Long userstate, Boolean guest, Boolean stall, Boolean manager){
         this.userid=userid;
         this.nickname=nickname;
+        this.userstate=userstate;
+        this.guest=guest;
+        this.stall=stall;
+        this.manager=manager;
     }
 
 }

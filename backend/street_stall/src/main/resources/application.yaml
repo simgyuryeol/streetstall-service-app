@@ -1,10 +1,16 @@
 spring:
-  profiles: real-db
   datasource:
-        url: jdbc:mariadb://street-stall-webserver.cjxaagbjsitm.ap-northeast-2.rds.amazonaws.com:3306/streetstallwebserver
-        username: tlarbfuf
-        password: rbfuf106203
-        driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://streetstallwebserver.cjxaagbjsitm.ap-northeast-2.rds.amazonaws.com:3306/street_stall_webserver?useUnicode=true&characterEncoding=utf-8
+    driver-class-name: org.mariadb.jdbc.Driver
+    username: tlarbfuf
+    password: rbfuf106203
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
 
 # spring:
 #   datasource:
