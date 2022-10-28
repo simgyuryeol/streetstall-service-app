@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-
 @Slf4j
 public class LoginTest {
 
