@@ -19,8 +19,8 @@ public class Stall {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "Stallid")
-    private User stallid;
+    @JoinColumn(name = "userid")
+    private User user;
 
     private String stallname;
     private String stallexplanation;
@@ -30,7 +30,7 @@ public class Stall {
 
     @Builder
     public Stall(User stallid, String stallname, String stallexplanation, Boolean stallopen, Long latitude, Long longitude){
-        this.stallid=stallid;
+        this.user=stallid;
         this.stallname=stallname;
         this.stallexplanation=stallexplanation;
         this.stallopen=stallopen;

@@ -16,5 +16,6 @@ public class StallTest {
     @Test
     public void stallTest(){
         log.info(stallRepository.findAll().toString());
+
     }
 }

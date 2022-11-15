@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 @Data
@@ -25,6 +27,10 @@ public class User {
     private Boolean guest;
     private Boolean stall;
     private Boolean manager;
+
+//    @OneToOne
+//    @JoinColumn(name = "stall_id")
+//    private Stall stall_id;
 
     @Builder
     public User(String userid, String nickname, Long userstate, Boolean guest, Boolean stall, Boolean manager){
